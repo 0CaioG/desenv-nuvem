@@ -37,7 +37,7 @@ app.get("/cadastro/:nome", function(req,res){
     
 })
 
-app.listen(process.env.PORT ?? 4000,function(erro){  // cria a aplicaÃ§Ã£o na porta 4000
+app.listen(process.env.PORT ?? 3000,function(erro){  // cria a aplicaÃ§Ã£o na porta 4000
     if (erro){
         console.log("Erro ao Iniciar.");
     }else{
