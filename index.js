@@ -1,46 +1,26 @@
-const express = require("express"); //importa o mÃ³dulo express neste arquivo
-const app = express(); //iniciando o express
+var express = require('express');
+var app = express();
+var fs = require("fs");
 
-let clientes = [];
-//criando a rota inicial
-app.get("/", function(req,res){
-    res.send("<h1>Bem vindo ao meu site!</h1>");
+app.get('/listUsers', function (req, res) {
+   fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
+      console.log( data );
+      res.end( data );
+   });
 })
 
-//rota do cadastro de produtos
-app.get("/clientes", function(req,res){
-    res.write("<h1>Lista de Clientes!</h1>");
-    for(let i = 0; i < clientes.length;i++){
-        res.write("<li>"+clientes[i]+" ----- id: "+i+"</li>");
-    }
-    
-})
+app.get('/listUser/:id', function (req, res) {
+    // First read existing users.
+    fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
+       var users = JSON.parse( data );
+       var user = users["user" + req.params.id] 
+       console.log( user );
+       res.end( JSON.stringify(user));
+    });
+ })
 
-//rota com parametro 
-app.get("/consulta/:parametro", function(req,res){
-    //req --> dados enviados pelo cliente
-    //res --> resposta enviada pelo servidor de volta ao cliente
-    let idcli = req.params.parametro;
-    res.send("<h1>Cliente: " + clientes[idcli]+"</h1>");
-})
-
-//rota com parametro opcional
-app.get("/cadastro/:nome", function(req,res){
-    //req --> dados enviados pelo cliente
-    var nome = req.params.nome;
-    if (nome){
-        clientes.push(nome)
-        res.send("<h1>Cliente " + nome + " cadastrado!</h1>");
-    }else{
-        res.send("cliente não cadastrado, não existe parametro!");
-    }
-    
-})
-
-app.listen(process.env.PORT ?? 4000,function(erro){  // cria a aplicaÃ§Ã£o na porta 4000
-    if (erro){
-        console.log("Erro ao Iniciar.");
-    }else{
-        console.log("Servidor Iniciado.");
-    }
+var server = app.listen(8081, function () {
+   var host = server.address().address
+   var port = server.address().port
+   console.log("Example app listening at http://%s:%s", host, port)
 })
